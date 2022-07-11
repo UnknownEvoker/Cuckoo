@@ -1,0 +1,30 @@
+Install any Ubuntu version from 20.04 and under.
+
+Cuckoo can be installed on a hypervisor of your choice OR on a physical Ubuntu host machine.
+
+For hypervisors ==> Ensure that The Virtual Machine has the VT-x capability enabled.
+
+Ubuntu Setup:
+Hypervisor ==> VMware Workstation Pro 16.2.3
+Virtual Machine ==> Ubuntu 18.04.06
+Storage/Hard Drive Space ==> 200> (Recommeded since will be performing nested virtualisation with Windows 7 VM using virtualbox)
+RAM ==> 6> (Again, Windows 7 VM requires 4 or more GB of RAM, ensure enough for both Ubuntu Host and VM)
+
+Once done, log in to the VM
+
+Launch the terminal:
+$ sudo apt-get update && sudo apt-get upgrade (Update the Ubuntu Packages)
+*If you are using a Hypervisor, you might want to create a snapshot after the packages has been upgraded
+
+As of now Cuckoo fully supports only python2.7, hence Python2.7 is needed to be installed on the VM
+Cuckoo also requires other software packages and python dependencies to install & function properly
+
+In a new terminal:
+$ sudo apt-get install python python-pip python-dev libffi-dev libssl-dev
+$ sudo apt-get install python-virtualenv python-setuptools
+$ sudo apt-get install libjpeg-dev zlib1g-dev swig
+
+It is recommended to create a new user to run Cuckoo to avoid security issues with the root user,
+though you can use the default root user as well.
+Ensure that the same user is used to run Cuckoo and to create and run the VirtualBox VMs (Otherwise Cuckoo won’t be able to identify and launch these Virtual Machines)
+$ sudo adduser cuckoo (Or any name you prefer)
