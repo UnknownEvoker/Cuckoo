@@ -1,16 +1,18 @@
-Install any Ubuntu version from 20.04 and under.
+Install any Ubuntu version from 20.04 and under. (Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2)
 
-Cuckoo can be installed on a hypervisor of your choice OR on a physical Ubuntu host machine.
+Cuckoo can be installed on any hypervisor of your choice OR on a physical Ubuntu host machine.
+For the scope of this project, VMware Workstation Pro 16.2.3 is used.
 
-For hypervisors ==> Ensure that The Virtual Machine has the VT-x capability enabled.
+For hypervisors ==> Ensure that The Virtual Machine has the VT-x capability enabled. 
+(To enable nested virtualization within the Ubuntu Linux Virtual Machine)
 
 Ubuntu Setup:
 Hypervisor ==> VMware Workstation Pro 16.2.3
 Virtual Machine ==> Ubuntu 18.04.06
-Storage/Hard Drive Space ==> 200> (Recommeded since will be performing nested virtualisation with Windows 7 VM using virtualbox)
-RAM ==> 6> (Again, Windows 7 VM requires 4 or more GB of RAM, ensure enough for both Ubuntu Host and VM)
+Storage/Hard Drive Space ==> 200> (Recommeded since we will be performing nested virtualisation with Windows 7 VM using virtualbox)
+RAM ==> 6> (Again, Windows 7 VM requires 4 or more GB of RAM to avoid detect by malware, ensure enough for both Ubuntu Host and VM)
 
-Once done, log in to the VM
+Once done, log in to the VM.
 
 Launch the terminal:
 $ sudo apt-get update && sudo apt-get upgrade (Update the Ubuntu Packages)
@@ -21,10 +23,25 @@ Cuckoo also requires other software packages and python dependencies to install 
 
 In a new terminal:
 $ sudo apt-get install python python-pip python-dev libffi-dev libssl-dev
-$ sudo apt-get install python-virtualenv python-setuptools
+$ sudo apt-get install python-setuptools
 $ sudo apt-get install libjpeg-dev zlib1g-dev swig
 
 It is recommended to create a new user to run Cuckoo to avoid security issues with the root user,
 though you can use the default root user as well.
 Ensure that the same user is used to run Cuckoo and to create and run the VirtualBox VMs (Otherwise Cuckoo won’t be able to identify and launch these Virtual Machines)
-$ sudo adduser cuckoo (Or any name you prefer)
+* $ sudo adduser cuckoo (Or any name you prefer)
+For this project we will be using the root user (Due to configuration issues, we will not create new user)
+
+sudo apt-get install -y mongodb
+
+cd Downloads/
+
+~/Downloads
+
+git clone https://github.com/volatilityfoundation/volatility.git 
+
+cd volatility
+
+sudo python setup.py build
+
+sudo python setup.py install
