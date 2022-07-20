@@ -1,12 +1,12 @@
 Install any Ubuntu version from 20.04 and under. (Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2)
 
-Cuckoo can be installed on any hypervisor of your choice OR on a physical Ubuntu host machine.
+Cuckoo can be installed on any virtual machine hypervisor of your choice OR on a physical Ubuntu host machine.
 For the scope of this project, VMware Workstation Pro 16.2.3 is used.
 
 For hypervisors ==> Ensure that The Virtual Machine has the VT-x capability enabled. 
 (To enable nested virtualization within the Ubuntu Linux Virtual Machine)
 
-Ubuntu Setup:
+Ubuntu Virtual Machine Host Setup:
 Hypervisor ==> VMware Workstation Pro 16.2.3
 Virtual Machine ==> Ubuntu 18.04.06
 Storage/Hard Drive Space ==> 200> (Recommeded since we will be performing nested virtualisation with Windows 7 VM using virtualbox)
@@ -30,7 +30,8 @@ It is recommended to create a new user to run Cuckoo to avoid security issues wi
 though you can use the default root user as well.
 Ensure that the same user is used to run Cuckoo and to create and run the VirtualBox VMs (Otherwise Cuckoo won’t be able to identify and launch these Virtual Machines)
 * $ sudo adduser cuckoo (Or any name you prefer)
-For this project we will be using the root user (Due to configuration issues, we will not create new user)
+For this project we will be using the root user to perform the installation and analysis (Due to configuration issues, we will not create new user)
+(fyp@ubuntu)
 
 sudo apt-get install -y mongodb
 
