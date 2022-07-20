@@ -46,3 +46,11 @@ cd volatility
 sudo python setup.py build
 
 sudo python setup.py install
+
+
+
+pip install -U pip setuptools
+
+sudo -H pip install -U cuckoo
+
+cuckoo
