@@ -47,6 +47,11 @@ sudo python setup.py build
 
 sudo python setup.py install
 
+sudo apt-get install tcpdump apparmor-utils
+sudo aa-disable /usr/sbin/tcpdump
+
+getcap /usr/sbin/tcpdump
+=> /usr/sbin/tcpdump = cap_net_admin,cap_net_raw+eip
 
 
 pip install -U pip setuptools
@@ -54,3 +59,60 @@ pip install -U pip setuptools
 sudo -H pip install -U cuckoo
 
 cuckoo
+
+
+CREATING A HOST ONLY NIC adapter
+
+vboxmanage hostonlyif create
+
+vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1
+
+(Create nested Windows 7 VM)
+run the command:
+VBoxManage modifyvm cuckoo1 --nested-hw-virt on
+
+Start the VM and install it.
+
+Once installed:
+
+Edit Group Policy
+
+1. Expand Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options. Scroll down to the User Account Control options
+
+“User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode” ==> Elevate without prompting
+
+User Account Control: Detect application installations and prompt for elevation” ==> Disabled
+
+User Account Control: Run all administrators in Admin Approval Mode” ==> Disabled
+
+2. Computer Configuration > Administrative Templates > Windows Components > Windows Update > Configure Automatic Updates
+
+Select Enabled, 2- Notify for download and notify for install, then click ok
+
+3.Computer Configuration > Administrative Templates > Network > Network connections > Windows Firewall > Domain Profile > Windows Firewall and change “Protect all network connections” ==> Disabled.
+
+4.Computer Configuration > Administrative Templates > Windows Components > Windows Defender Antivirus then set “Turn off Windows Defender Antivirus” ==> Enabled
+
+
+
+
+
+
+
+
+
+
+
+Launch two terminals 
+The first terminal will be used to run and start Cuckoo
+
+cuckoo
+
+In the second terminal type the following to start the web server for the Cuckoo web interface
+
+
+cuckoo web runserver 0.0.0.0:8080 
+OR
+cuckoo web --host 127.0.0.1 --port 8080
+
+visit the Cuckoo Web Server via 127.0.0.1:8000 
