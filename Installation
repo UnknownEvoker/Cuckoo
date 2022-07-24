@@ -5,25 +5,28 @@ Guest Machines are used within the host machine as testing/analysis setups.
 For Windows analysis, the recommended OS releases are Windows XP and Windows 7 64-bit.
 A virtualization sofotware is required for the deployment of the guest virtual machines
 
-For the full setup of the Cuckoo Sandbox environment, we will be using:
-1. VMware Workstation Pro to deploy a Ubuntu 18.04 virtual machine host
+For the full setup of the Cuckoo Sandbox environment and with the scope of the project in mind, we will be using:
+1. VMware Workstation Pro 16.2.3 to deploy a Ubuntu 18.04 virtual machine host
 (Ubuntu 20.04 and under works as well, reasons will be explained later on in the guide)
 2. Oracle VM VirtualBox as to deploy our Guest virtual machine (acts as a sandbox) for dynamic analysis with Cuckoo
-3. Windows 7 SP1 64-bit as the guest Operating System
+3. Windows 7 SP1 64-bit as the guest Operating System for the execution of malware to be analysed by Cuckoo
 
-Install any Ubuntu version from 20.04 and under. (Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2)
+(Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2)
 
-Cuckoo can be installed on any virtual machine hypervisor of your choice OR on a physical Ubuntu host machine.
-For the scope of this project, VMware Workstation Pro 16.2.3 is used.
 
 For hypervisors ==> Ensure that The Virtual Machine has the VT-x capability enabled. 
-(To enable nested virtualization within the Ubuntu Linux Virtual Machine)
+(To enable nested virtualization within the Ubuntu Linux Virtual Machine, 
+since we are using Ubuntu as a virtual machine host)
 
 Ubuntu Virtual Machine Host Setup:
 Hypervisor ==> VMware Workstation Pro 16.2.3
 Virtual Machine ==> Ubuntu 18.04.06
-Storage/Hard Drive Space ==> 200> (Recommeded since we will be performing nested virtualisation with Windows 7 VM using virtualbox)
-RAM ==> 6> (Again, Windows 7 VM requires 4 or more GB of RAM to avoid detect by malware, ensure enough for both Ubuntu Host and VM)
+Storage/Hard Drive Space ==> 200> 
+(Recommeded since we will be performing nested virtualisation with Windows 7 VM using virtualbox, 
+ ensure sufficient storage reosurces for both the VM host and VM guest)
+RAM ==> 6> 
+(Again, Windows 7 VM requires 4 or more GB of RAM to avoid detection by malware, 
+ ensure enough for both Ubuntu Host and VM to function properly)
 
 Once done, log in to the VM.
 
