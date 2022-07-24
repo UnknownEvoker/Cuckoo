@@ -1,6 +1,7 @@
 With reference to https://cuckoo.readthedocs.io/en/latest/installation/ (Cuckoo Sandbox documentation v: 2.0.7),
 it is recommended to deploy Cuckoo in a GNU/Linux machine, preferably Debian or Ubuntu, as a virtual machine host or a physical host.
 (Though it works with other OS as well)
+
 Guest Machines are used within the host machine as testing/analysis setups.
 For Windows analysis, the recommended OS releases are Windows XP and Windows 7 64-bit.
 A virtualization sofotware is required for the deployment of the guest virtual machines
@@ -178,9 +179,10 @@ sudo nano memory.conf
 basic guest_profile = Win7SP1x64 
 then Ctrl + X to exit , Y to save 
 
-If you require another Operating System then yo ucna get a full list of the supported profiles by running 
+If you are unsure of the Oerating system profile to use, you can get a full list of the supported profiles by running:
 
 vol.py --info |grep Profiles -A48
+
 
 sudo nano reporting.conf
 enabled = yes
@@ -189,7 +191,12 @@ mongodb enabled = yes
 then Ctrl + X to exit , Y to save
 
 
+Once all configurations has been made, ensure that Windows 7 Guest machine is shutdown and reboot the Ubuntu Virtual Machine host
 
+In a new terminal, ensure that the latest Cuckoo signatures and other supplies are downloaded from the 
+Cuckoo Community, run the command:
+
+cuckoo community 
 
 
 
