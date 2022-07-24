@@ -11,30 +11,32 @@ For the full setup of the Cuckoo Sandbox environment and with the scope of the p
 2. Oracle VM VirtualBox as to deploy our Guest virtual machine (acts as a sandbox) for dynamic analysis with Cuckoo
 3. Windows 7 SP1 64-bit as the guest Operating System for the execution of malware to be analysed by Cuckoo
 
-(Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2)
-
 
 For hypervisors ==> Ensure that The Virtual Machine has the VT-x capability enabled. 
 (To enable nested virtualization within the Ubuntu Linux Virtual Machine, 
 since we are using Ubuntu as a virtual machine host)
 
-Ubuntu Virtual Machine Host Setup:
+UBUNTU VIRTUAL MACHINE HOST SETUP:
 Hypervisor ==> VMware Workstation Pro 16.2.3
 Virtual Machine ==> Ubuntu 18.04.06
 Storage/Hard Drive Space ==> 200> 
 (Recommeded since we will be performing nested virtualisation with Windows 7 VM using virtualbox, 
  ensure sufficient storage reosurces for both the VM host and VM guest)
-RAM ==> 6> 
+RAM ==> 4> 
 (Again, Windows 7 VM requires 4 or more GB of RAM to avoid detection by malware, 
  ensure enough for both Ubuntu Host and VM to function properly)
+ 
+Once done the VM setup is completed, log in to the VM.
 
-Once done, log in to the VM.
-
-Launch the terminal:
+Launch the terminal and type the following commands.
 $ sudo apt-get update && sudo apt-get upgrade (Update the Ubuntu Packages)
-*If you are using a Hypervisor, you might want to create a snapshot after the packages has been upgraded
+* If you are using a Hypervisor, you might want to create a snapshot as acting as a Base Image 
+after the packages has been upgraded.
 
-As of now Cuckoo fully supports only python2.7, hence Python2.7 is needed to be installed on the VM
+Cuckoo Sandbox Installation & Setup
+
+Cuckoo components are written entirely in Python, and as of now Cuckoo only fully supports python2.7, hence Python2.7 is needed to be installed on the VM
+as the main python version
 Cuckoo also requires other software packages and python dependencies to install & function properly
 
 In a new terminal:
@@ -55,6 +57,9 @@ cd Downloads/
 
 ~/Downloads
 
+
+Installing the Volatility Plugin
+
 git clone https://github.com/volatilityfoundation/volatility.git 
 
 cd volatility
@@ -63,11 +68,17 @@ sudo python setup.py build
 
 sudo python setup.py install
 
+cd ..
+
+Installtion tcpdump plugin
 sudo apt-get install tcpdump apparmor-utils
 sudo aa-disable /usr/sbin/tcpdump
 
 getcap /usr/sbin/tcpdump
 => /usr/sbin/tcpdump = cap_net_admin,cap_net_raw+eip
+
+sudo apt-get install -y virtualbox
+(Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2)
 
 
 pip install -U pip setuptools
@@ -77,31 +88,45 @@ sudo -H pip install -U cuckoo
 cuckoo
 
 
+
 CREATING A HOST ONLY NIC adapter
 
 vboxmanage hostonlyif create
 
 vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1
 
-(Create nested Windows 7 VM)
-run the command:
-VBoxManage modifyvm cuckoo1 --nested-hw-virt on
+
+
+WINDOWS 7 GUEST MACHINE SETUP:
+Since we are running VirtualBox within our VMware Virtual Machine, 
+we need to ensure that VirtualBox is capable of nested virtualization as well.
+
+Run the command:
+VBoxManage modifyvm cuckoo1 --nested-hw-virt on (Enable VirtualBox nested virtualization)
 
 Start the VM and install it.
 
-Once installed:
+CONFIGURING THE GUEST MACHINE:
 
-Edit Group Policy
+Once installed, search for Edit Group Policy in the Windows search box.
 
-1. Expand Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options. Scroll down to the User Account Control options
+There should be two configuration types under "Local Computer Policy"
 
-“User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode” ==> Elevate without prompting
+From there:
 
-User Account Control: Detect application installations and prompt for elevation” ==> Disabled
+1.
+Expand Computer Configuration:
+> Windows Settings > Security Settings > Local Policies > Security Options. Search for User Account Control options
 
-User Account Control: Run all administrators in Admin Approval Mode” ==> Disabled
+“User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode”: Elevate without prompting
 
-2. Computer Configuration > Administrative Templates > Windows Components > Windows Update > Configure Automatic Updates
+User Account Control: Detect application installations and prompt for elevation”: Disabled
+
+User Account Control: Run all administrators in Admin Approval Mode”: Disabled
+
+2. 
+Computer Configuration 
+> Administrative Templates > Windows Components > Windows Update > Configure Automatic Updates
 
 Select Enabled, 2- Notify for download and notify for install, then click ok
 
@@ -112,6 +137,48 @@ Select Enabled, 2- Notify for download and notify for install, then click ok
 
 
 
+
+
+
+
+
+
+cd ~/.cuckoo/conf
+
+sudo nano cuckoo.conf
+machinery = virtualbox
+memory_dump = yes
+ip = 192.168.56.1
+then Ctrl + X to exit , Y to save
+
+sudo nano auxiliary.conf
+sniffer enabled = yes
+then Ctrl + X to exit , Y to save 
+
+sudo nano virtualbox.conf
+virtualbox mode = gui
+machines = cuckoo1
+optional = label = cuckoo1 and platform = windows
+ip = 192.168.56.101
+snapshot = Snapshot1
+Then Ctrl + X to exit , Y to save
+
+sudo nano processing.conf
+memory enabled = yes then Ctrl + X to exit , Y to save
+
+sudo nano memory.conf
+basic guest_profile = Win7SP1x64 
+then Ctrl + X to exit , Y to save 
+
+If you require another Operating System then yo ucna get a full list of the supported profiles by running 
+
+vol.py --info |grep Profiles -A48
+
+sudo nano reporting.conf
+enabled = yes
+Report.html enabled = yes 
+mongodb enabled = yes 
+then Ctrl + X to exit , Y to save
 
 
 
