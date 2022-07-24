@@ -1,3 +1,16 @@
+With reference to https://cuckoo.readthedocs.io/en/latest/installation/ (Cuckoo Sandbox documentation v: 2.0.7),
+it is recommended to deploy Cuckoo in a GNU/Linux machine, preferably Debian or Ubuntu, as a virtual machine host or a physical host.
+(Though it works with other OS as well)
+Guest Machines are used within the host machine as testing/analysis setups.
+For Windows analysis, the recommended OS releases are Windows XP and Windows 7 64-bit.
+A virtualization sofotware is required for the deployment of the guest virtual machines
+
+For the full setup of the Cuckoo Sandbox environment, we will be using:
+1. VMware Workstation Pro to deploy a Ubuntu 18.04 virtual machine host
+(Ubuntu 20.04 and under works as well, reasons will be explained later on in the guide)
+2. Oracle VM VirtualBox as to deploy our Guest virtual machine (acts as a sandbox) for dynamic analysis with Cuckoo
+3. Windows 7 SP1 64-bit as the guest Operating System
+
 Install any Ubuntu version from 20.04 and under. (Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2)
 
 Cuckoo can be installed on any virtual machine hypervisor of your choice OR on a physical Ubuntu host machine.
