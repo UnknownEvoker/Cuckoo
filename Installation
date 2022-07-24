@@ -134,21 +134,29 @@ Select Enabled, 2- Notify for download and notify for install, then click ok
 
 4.Computer Configuration > Administrative Templates > Windows Components > Windows Defender Antivirus then set “Turn off Windows Defender Antivirus” ==> Enabled
 
+Ensure that 
+
+
+SETTING UP THE GUEST MACHINE:
+
+To ensure that Cuckoo functions properly in the virtual guest machine, several software and libraries are required to be installed.
+
+Again, Python (version 2.7 is preferred) is a requirement for the Cuckoo guest component to run and analyse samples properly.
+
+From the two links, download the installer (in the Ubuntu VM) for the Python libraries.
+https://www.python.org/ftp/python/2.7.8/python-2.7.8.amd64.msi 
+https://pypi.python.org/packages/2.7/P/Pillow/Pillow-2.5.3.win-amd64-py2.7.exe#md5=33c3a581ff1538b4f79b4651084090c8 
 
 
 
-
-
-
-
-
+CONFIGURING CUCKOO
 
 cd ~/.cuckoo/conf
 
-sudo nano cuckoo.conf
-machinery = virtualbox
-memory_dump = yes
-ip = 192.168.56.1
+sudo nano cuckoo.conf => Cuckoo Configuration File
+machinery = virtualbox  => Set Cuckoo to use virtualbox as the virtualization software
+memory_dump = yes => Since the Volatility plugin has been installed, it can be used to perform memory dumps of the guest machine)
+ip = 192.168.56.1 => Set the IP addresses of the guest machine for Cuckoo to communicate with.
 then Ctrl + X to exit , Y to save
 
 sudo nano auxiliary.conf
