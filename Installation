@@ -126,7 +126,7 @@ sudo nano /opt/systemd/vboxhostonly
 
 
 
-WINDOWS 7 GUEST MACHINE SETUP:
+DEPLOYING THE WINDOWS 7 GUEST MACHINE:
 Since we are running VirtualBox within our VMware Virtual Machine, 
 we need to ensure that VirtualBox is capable of nested virtualization as well.
 
@@ -141,7 +141,7 @@ ISO File: Windows 7 SP1 (https://cuckoo.sh/win7ultimate.iso)
 Start the VM and install it.
 
 CONFIGURING THE GUEST MACHINE:
-We msut first configure the Windows 7 VM Network Adapter
+We must first configure the Windows 7 VM Network Adapter
 
 IP Address — 192.168.56.101 (VM IP address)
 Subnet Mask — 255.255.255.0
@@ -149,7 +149,8 @@ Default Gateway — 192.168.56.1 (interface for Internet Access)
 DNS Servers — 8.8.8.8/8.8.4.4
 
 
-Once installed, search for Edit Group Policy in the Windows search box.
+We will now make the guest machine intentionally vulnerable.
+Search for Edit Group Policy in the Windows search box.
 
 There should be two configuration types under "Local Computer Policy"
 
@@ -157,25 +158,29 @@ From there:
 
 1.
 Expand Computer Configuration:
-> Windows Settings > Security Settings > Local Policies > Security Options. Search for User Account Control options
+Windows Settings > Security Settings > Local Policies > Security Options. Search for User Account Control options
 
 “User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode”: Elevate without prompting
 
-User Account Control: Detect application installations and prompt for elevation”: Disabled
+"User Account Control: Detect application installations and prompt for elevation”: Disabled
 
-User Account Control: Run all administrators in Admin Approval Mode”: Disabled
+"User Account Control: Run all administrators in Admin Approval Mode”: Disabled
+
+These configurations essentially allows the guest machine to run any software and its installation
+in administrator mode without the need for a approval prompt.
 
 2. 
 Computer Configuration 
-> Administrative Templates > Windows Components > Windows Update > Configure Automatic Updates
+Administrative Templates > Windows Components > Windows Update > Configure Automatic Updates
 
 Select Enabled, 2- Notify for download and notify for install, then click ok
 
-3.Computer Configuration > Administrative Templates > Network > Network connections > Windows Firewall > Domain Profile > Windows Firewall and change “Protect all network connections” ==> Disabled.
+3.
+Computer Configuration > Administrative Templates > Network > Network connections > Windows Firewall > Domain Profile > Windows Firewall > Set “Protect all network connections”: Disabled.
 
-4.Computer Configuration > Administrative Templates > Windows Components > Windows Defender Antivirus then set “Turn off Windows Defender Antivirus” ==> Enabled
+4.
+Computer Configuration > Administrative Templates > Windows Components > Windows Defender Antivirus > Set “Turn off Windows Defender Antivirus”: Enabled
 
-Ensure that 
 
 
 SETTING UP THE GUEST MACHINE:
