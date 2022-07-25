@@ -155,7 +155,6 @@ Search for Edit Group Policy in the Windows search box.
 There should be two configuration types under "Local Computer Policy"
 
 From there:
-
 1.
 Expand Computer Configuration:
 Windows Settings > Security Settings > Local Policies > Security Options. Search for User Account Control options
