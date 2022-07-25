@@ -127,16 +127,17 @@ sudo nano /opt/systemd/vboxhostonly
 
 
 DEPLOYING THE WINDOWS 7 GUEST MACHINE:
-Since we are running VirtualBox within our VMware Virtual Machine, 
-we need to ensure that VirtualBox is capable of nested virtualization as well.
-
-Run the command:
-VBoxManage modifyvm cuckoo1 --nested-hw-virt on (Enable VirtualBox nested virtualization)
 
 VM Name: cuckoo1
 RAM Size: 4GB >
 Disk Size: 80GB >
 ISO File: Windows 7 SP1 (https://cuckoo.sh/win7ultimate.iso)
+
+Since we are running VirtualBox within our VMware Virtual Machine, 
+we need to ensure that VirtualBox is capable of nested virtualization as well.
+
+Run the command:
+VBoxManage modifyvm cuckoo1 --nested-hw-virt on (Enable VirtualBox nested virtualization)
 
 Start the VM and install it.
 
@@ -225,6 +226,12 @@ If it still does not work, create a Shared folder between the Ubuntu VM host and
 Reboot the Guest VM and you should see a Windows terminal opened. 
 This means the Cuckoo agent is running.
 *If there is a Windows Firewall prompt blocking the python agent, just select "Allow Access"
+
+On VirtualBox, select cuckoo1 > Settings > Network > Adapter 1 > Change "Attached to": Host-Only Adapter > Name: vboxnet0
+
+Create a snapshot of the Guest VM:
+3 dots > Snapshots > Take > Snapshot Name: Snapshot1
+
 
 
 CONFIGURING CUCKOO
