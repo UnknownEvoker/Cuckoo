@@ -34,7 +34,7 @@ $ sudo apt-get update && sudo apt-get upgrade (Update the Ubuntu Packages)
 * If you are using a Hypervisor, you might want to create a snapshot as acting as a Base Image 
 after the packages has been upgraded.
 
-Cuckoo Sandbox Installation & Setup
+CUCKOO SANDBOX INSTALLATION & SETUP
 
 Cuckoo components are written entirely in Python, and as of now Cuckoo only fully supports python2.7, hence Python2.7 is needed to be installed on the VM
 as the main python version
@@ -45,21 +45,16 @@ $ sudo apt-get install python python-pip python-dev libffi-dev libssl-dev
 $ sudo apt-get install python-setuptools
 $ sudo apt-get install libjpeg-dev zlib1g-dev swig
 
-It is recommended to create a new user to run Cuckoo to avoid security issues with the root user,
-though you can use the default root user as well.
 Ensure that the same user is used to run Cuckoo and to create and run the VirtualBox VMs (Otherwise Cuckoo won’t be able to identify and launch these Virtual Machines)
-* $ sudo adduser cuckoo (Or any name you prefer)
-For this project we will be using the root user to perform the installation and analysis (Due to configuration issues, we will not create new user)
-(fyp@ubuntu)
 
-sudo apt-get install -y mongodb
+sudo apt-get install -y mongodb (Use the Django-based Web Interface for Cuckoo)
 
 cd Downloads/
 
 ~/Downloads
 
 
-Installing the Volatility Plugin
+Installing the Volatility Plugin (To perform memory dumps on the analysis VM)
 
 git clone https://github.com/volatilityfoundation/volatility.git 
 
@@ -71,7 +66,8 @@ sudo python setup.py install
 
 cd ..
 
-Installtion tcpdump plugin
+Installtion tcpdump plugin (To perform network dumps of malware activity during its execution)
+
 sudo apt-get install tcpdump apparmor-utils
 sudo aa-disable /usr/sbin/tcpdump
 
@@ -79,7 +75,7 @@ getcap /usr/sbin/tcpdump
 => /usr/sbin/tcpdump = cap_net_admin,cap_net_raw+eip
 
 sudo apt-get install -y virtualbox
-(Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2)
+(Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2, Ubuntu 20.04 and below support these versions)
 
 
 pip install -U pip setuptools
@@ -90,7 +86,7 @@ cuckoo
 
 
 
-CREATING A HOST ONLY NIC adapter
+CREATING & ENABLE A HOST ONLY NIC adapter
 
 vboxmanage hostonlyif create
 
