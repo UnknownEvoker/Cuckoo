@@ -194,7 +194,15 @@ https://www.python.org/ftp/python/2.7.8/python-2.7.8.amd64.msi
 & Python Pillow
 https://pypi.python.org/packages/2.7/P/Pillow/Pillow-2.5.3.win-amd64-py2.7.exe#md5=33c3a581ff1538b4f79b4651084090c8 
 
-Python Pillow: Used for taking screenshots of the Windows desktop during the analysis.
+Python Pillow: Used for taking screenshots of the Windows desktop during the analysis. Can be seen when using the Cuckoo web interface.
+
+Drag & Drop the two installer files from the Ubuntu VM to the Windows 7 VirtualBox VM
+
+(Inside the VM, under Devices > Drag & Drop, 
+ensure that it is set to "Host to Guest" to allow file transfers from the Host to the Guest Machine)
+
+Install two Python programs in the Guest VM.
+
 
 Cuckoo requires a custom agent capable of cross-platforming to be installed within the Guest machine to handle communication 
 and the exchange of data with the Ubuntu virtual machine host.
@@ -202,9 +210,22 @@ and the exchange of data with the Ubuntu virtual machine host.
 The agent.py file is located in the ~/.cuckoo/agent ($CWD/agent/) directory. It can be installed on the guest by
 copying it from the this directory to the guest machine.
 
-Drag and drop the two installer files from the Ubuntu VM to the Windows 7 VirtualBox VM.
-(Inside the VM, under Devices > Drag & Drop, 
-ensure that it is set to Bidirectional to allow file transfers from the Host to the Guest Machine)
+The Cuckoo Agent is a script that will spawn a Python Window and 
+launch a small API server that the host will be able to talk to.
+
+We want to ensure that this agent will launch at Windows boot. Is is done by placing the agent.py file
+in the Startup folder:
+C:\Users\<Windows_User>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+*To see the AppData folder in the C: Drive, File Explorer > View > Ensure Hidden Items is checked.
+
+*NOTE: If are not able to Drag & Drop or Copy the files from the Ubuntu VM host to the VirtualBox Guest VM,
+you'll need to install VirtualBox GuestAddtions.
+If it still does not work, create a Shared folder between the Ubuntu VM host and the Guest VM
+
+Reboot the Guest VM and you should see a Windows terminal opened. 
+This means the Cuckoo agent is running.
+*If there is a Windows Firewall prompt blocking the python agent, just select "Allow Access"
 
 
 CONFIGURING CUCKOO
