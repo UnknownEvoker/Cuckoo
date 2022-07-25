@@ -41,20 +41,32 @@ as the main python version
 Cuckoo also requires other software packages and python dependencies to install & function properly
 
 In a new terminal:
-$ sudo apt-get install python python-pip python-dev libffi-dev libssl-dev
-$ sudo apt-get install python-setuptools
-$ sudo apt-get install libjpeg-dev zlib1g-dev swig
+sudo apt-get install curl
 
-Ensure that the same user is used to run Cuckoo and to create and run the VirtualBox VMs (Otherwise Cuckoo won’t be able to identify and launch these Virtual Machines)
+curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+
+sudo apt-get install python
+
+sudo python get-pip.py
+
+sudo apt-get install python-dev libffi-dev libssl-dev git
+sudo apt-get install python-setuptools
+sudo apt-get install libjpeg-dev zlib1g-dev swig
 
 sudo apt-get install -y mongodb (Use the Django-based Web Interface for Cuckoo)
+
+sudo apt-get install -y virtualbox
+(Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2, Ubuntu 20.04 and below support these versions)
+
+Ensure that the same user is used to run Cuckoo and to create and run the VirtualBox VMs 
+(Otherwise Cuckoo won’t be able to identify and launch these Virtual Machines)
+
+
+INSTALLING THE Volatility PLUGIN: (To perform memory dumps on the analysis VM)
 
 cd Downloads/
 
 ~/Downloads
-
-
-Installing the Volatility Plugin (To perform memory dumps on the analysis VM)
 
 git clone https://github.com/volatilityfoundation/volatility.git 
 
@@ -64,19 +76,26 @@ sudo python setup.py build
 
 sudo python setup.py install
 
-cd ..
+cd .. (Exit the Downloads directory)
 
-Installtion tcpdump plugin (To perform network dumps of malware activity during its execution)
+
+INSTALLING THE tcpdump PLUGIN: (To perform network dumps of malware activity during its execution)
 
 sudo apt-get install tcpdump apparmor-utils
 sudo aa-disable /usr/sbin/tcpdump
-
+sudo setcap cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump
 getcap /usr/sbin/tcpdump
-=> /usr/sbin/tcpdump = cap_net_admin,cap_net_raw+eip
+=> /usr/sbin/tcpdump = cap_net_admin,cap_net_raw+eip (To verify the "setcap" command)
 
-sudo apt-get install -y virtualbox
-(Cuckoo supports VirtualBox 4.3, 5.0, 5.1, and 5.2, Ubuntu 20.04 and below support these versions)
 
+INSTALLING THE M2Crpyto PLUGIN:
+
+sudo apt-get install swig (SWIG is needed to be installed to support M2crypto, we have specified this in the earlier commands)
+
+sudo pip install m2crypto
+
+
+INSTALLING Cuckoo Sandbox:
 
 pip install -U pip setuptools
 
