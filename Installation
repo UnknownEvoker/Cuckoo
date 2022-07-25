@@ -101,15 +101,28 @@ pip install -U pip setuptools
 
 sudo -H pip install -U cuckoo
 
-cuckoo
+cuckoo (To start the Cuckoo Sandbox)
 
 
 
-CREATING & ENABLE A HOST ONLY NIC adapter
+SETTING UP VirtualBox NETWORKING
 
-vboxmanage hostonlyif create
+sudo apt install net-tools (Installing Networking Ultilties for Linux)
 
-vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1
+ifconfig (net-tools command to display status of the currently active interfaces)
+
+vboxmanage hostonlyif create (Creates a "Host-Only" Adapter)
+
+vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1 (Creates a host interface "vboxnet0")
+
+ifconfig (Check that the hostonly interface has been enabled)
+
+Since the host-only interface is only persistent until the next reboot
+sudo mkdir /opt/systemd/
+
+sudo nano /opt/systemd/vboxhostonly
+
+
 
 
 
@@ -120,9 +133,21 @@ we need to ensure that VirtualBox is capable of nested virtualization as well.
 Run the command:
 VBoxManage modifyvm cuckoo1 --nested-hw-virt on (Enable VirtualBox nested virtualization)
 
+VM Name: cuckoo1
+RAM Size: 4GB >
+Disk Size: 80GB >
+ISO File: Windows 7 SP1 (https://cuckoo.sh/win7ultimate.iso)
+
 Start the VM and install it.
 
 CONFIGURING THE GUEST MACHINE:
+We msut first configure the Windows 7 VM Network Adapter
+
+IP Address — 192.168.56.101 (VM IP address)
+Subnet Mask — 255.255.255.0
+Default Gateway — 192.168.56.1 (interface for Internet Access)
+DNS Servers — 8.8.8.8/8.8.4.4
+
 
 Once installed, search for Edit Group Policy in the Windows search box.
 
