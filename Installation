@@ -78,7 +78,6 @@ sudo python setup.py install
 
 cd .. (Exit the Downloads directory)
 
-
 INSTALLING THE tcpdump PLUGIN: (To perform network dumps of malware activity during its execution)
 
 sudo apt-get install tcpdump apparmor-utils
@@ -87,13 +86,11 @@ sudo setcap cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump
 getcap /usr/sbin/tcpdump
 => /usr/sbin/tcpdump = cap_net_admin,cap_net_raw+eip (To verify the "setcap" command)
 
-
 INSTALLING THE M2Crpyto PLUGIN:
 
 sudo apt-get install swig (SWIG is needed to be installed to support M2crypto, we have specified this in the earlier commands)
 
 sudo pip install m2crypto
-
 
 INSTALLING Cuckoo Sandbox:
 
@@ -203,7 +200,6 @@ ensure that it is set to "Host to Guest" to allow file transfers from the Host t
 
 Install two Python programs in the Guest VM.
 
-
 Cuckoo requires a custom agent capable of cross-platforming to be installed within the Guest machine to handle communication 
 and the exchange of data with the Ubuntu virtual machine host.
 
@@ -234,7 +230,7 @@ Create a snapshot of the Guest VM:
 
 
 
-PER-ANALYSIS NETWORK ROUTING
+PER-ANALYSIS NETWORK ROUTING (Simple Global Routing)
 
 sudo iptables -t nat -A POSTROUTING -o eth0 -s 192.168.56.0/24 -j MASQUERADE
 
@@ -252,6 +248,7 @@ After these commands are executed, we have to enabled IP forwarding in the kerne
 
 echo 1 | sudo tee -a /proc/sys/net/ipv4/ip_forward
 sudo sysctl -w net.ipv4.ip_forward=1
+
 
 
 CONFIGURING CUCKOO
@@ -294,6 +291,9 @@ Report.html enabled = yes
 mongodb enabled = yes 
 then Ctrl + X to exit , Y to save
 
+
+
+STARTING CUCKOO
 
 Once all configurations has been made, ensure that Windows 7 Guest machine is shutdown and reboot the Ubuntu Virtual Machine host
 
