@@ -1,3 +1,4 @@
+PREREQUISITES:
 With reference to https://cuckoo.readthedocs.io/en/latest/installation/ (Cuckoo Sandbox documentation v: 2.0.7),
 it is recommended to deploy Cuckoo in a GNU/Linux machine, preferably Debian or Ubuntu, as a virtual machine host or a physical host.
 (Though it works with other OS as well)
@@ -13,9 +14,11 @@ For the full setup of the Cuckoo Sandbox environment and with the scope of the p
 3. Windows 7 SP1 64-bit as the guest Operating System for the execution of malware to be analysed by Cuckoo
 
 
-For hypervisors ==> Ensure that The Virtual Machine has the VT-x capability enabled. 
+For hypervisors ==> Ensure that The Virtual Machine has the can virtualize the VT-x capability.
 (To enable nested virtualization within the Ubuntu Linux Virtual Machine, 
 since we are using Ubuntu as a virtual machine host)
+
+
 
 UBUNTU VIRTUAL MACHINE HOST SETUP:
 Hypervisor ==> VMware Workstation Pro 16.2.3
@@ -34,8 +37,9 @@ $ sudo apt-get update && sudo apt-get upgrade (Update the Ubuntu Packages)
 * If you are using a Hypervisor, you might want to create a snapshot as acting as a Base Image 
 after the packages has been upgraded.
 
-CUCKOO SANDBOX INSTALLATION & SETUP
 
+
+CUCKOO SANDBOX INSTALLATION & SETUP
 Cuckoo components are written entirely in Python, and as of now Cuckoo only fully supports python2.7, hence Python2.7 is needed to be installed on the VM
 as the main python version
 Cuckoo also requires other software packages and python dependencies to install & function properly
@@ -43,9 +47,9 @@ Cuckoo also requires other software packages and python dependencies to install 
 In a new terminal:
 sudo apt-get install curl
 
-curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py (cURL is required to install python pip2.7)
 
-sudo apt-get install python
+sudo apt-get install python (Installs python2.7.8)
 
 sudo python get-pip.py
 
@@ -62,7 +66,9 @@ Ensure that the same user is used to run Cuckoo and to create and run the Virtua
 (Otherwise Cuckoo won’t be able to identify and launch these Virtual Machines)
 
 
-INSTALLING THE Volatility PLUGIN: (To perform memory dumps on the analysis VM)
+
+INSTALLING CUCKOO MODULES (Improves processing of analysis report)
+Volatility: (To perform memory dumps on the analysis VM)
 
 cd Downloads/
 
@@ -78,7 +84,8 @@ sudo python setup.py install
 
 cd .. (Exit the Downloads directory)
 
-INSTALLING THE tcpdump PLUGIN: (To perform network dumps of malware activity during its execution)
+
+tcpdump: (To perform network dumps of malware activity during its execution)
 
 sudo apt-get install tcpdump apparmor-utils
 sudo aa-disable /usr/sbin/tcpdump
@@ -86,11 +93,13 @@ sudo setcap cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump
 getcap /usr/sbin/tcpdump
 => /usr/sbin/tcpdump = cap_net_admin,cap_net_raw+eip (To verify the "setcap" command)
 
-INSTALLING THE M2Crpyto PLUGIN:
 
+M2Crpyto:
 sudo apt-get install swig (SWIG is needed to be installed to support M2crypto, we have specified this in the earlier commands)
 
 sudo pip install m2crypto
+
+
 
 INSTALLING Cuckoo Sandbox:
 
