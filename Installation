@@ -323,7 +323,12 @@ STARTING CUCKOO
 
 Once all configurations has been made, ensure that Windows 7 Guest machine is shutdown and reboot the Ubuntu Virtual Machine host
 
-In a new terminal, ensure that the latest Cuckoo signatures and other supplies are downloaded from the 
+To confirm again, run the two scripts to enable the VirtualBox Host-Only Interface and the iptable rules
+
+sudo bash /opt/scripts/vboxhostonly_enable.sh
+sudo bash /opt/scripts/ip_forward.sh
+
+Before running Cuckoo, ensure that the latest Cuckoo signatures and other supplies are downloaded from the 
 Cuckoo Community, run the command:
 
 cuckoo community 
