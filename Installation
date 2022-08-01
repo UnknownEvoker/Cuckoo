@@ -82,10 +82,10 @@ sudo python setup.py build
 
 sudo python setup.py install
 
-cd .. (Exit the Downloads directory)
+cd ..
 
 
-tcpdump: (To perform network dumps of malware activity during its execution)
+tcpdump: (A packet analyser/network sniffer that intercepts network traffic on the system)
 
 sudo apt-get install tcpdump apparmor-utils
 sudo aa-disable /usr/sbin/tcpdump
@@ -101,7 +101,7 @@ sudo pip install m2crypto
 
 
 
-INSTALLING Cuckoo Sandbox:
+INSTALLING Cuckoo Sandbox: (A cryptography and SSL tool kit for Python)
 
 pip install -U pip setuptools
 
@@ -111,8 +111,7 @@ cuckoo (To start the Cuckoo Sandbox)
 
 
 
-SETTING UP VirtualBox NETWORKING
-
+SETTING UP VirtualBox Host-Only INTERFACE
 sudo apt install net-tools (Installing Networking Ultilties for Linux)
 
 ifconfig (net-tools command to display status of the currently active interfaces)
@@ -123,12 +122,17 @@ vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1 (Creates a host interf
 
 ifconfig (Check that the hostonly interface has been enabled)
 
-Since the host-only interface is only persistent until the next reboot
-sudo mkdir /opt/systemd/
+Since the host-only interface is only persistent until the next reboot, 
+a simple bash script can be created for us to execute rather than typing the commands again.
 
-sudo nano /opt/systemd/vboxhostonly
+sudo mkdir /opt/scripts/ (Create a directory called "scripts" in the /opt path)
 
+sudo nano /opt/scripts/vboxhostonly_enable.sh
 
+#!/bin/bash
+vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1 
+
+Ctrl + S to save.
 
 
 
@@ -157,7 +161,7 @@ DNS Servers — 8.8.8.8/8.8.4.4
 
 
 We will now make the guest machine intentionally vulnerable.
-Search for Edit Group Policy in the Windows search box.
+Login to the VM and search for Edit Group Policy in the Windows search box.
 
 There should be two configuration types under "Local Computer Policy"
 
@@ -198,9 +202,13 @@ Again, Python (version 2.7 is preferred) is a requirement for the Cuckoo guest c
 From the two links, download the installer (in the Ubuntu VM) for Python2.7
 https://www.python.org/ftp/python/2.7.8/python-2.7.8.amd64.msi 
 & Python Pillow
-https://pypi.python.org/packages/2.7/P/Pillow/Pillow-2.5.3.win-amd64-py2.7.exe#md5=33c3a581ff1538b4f79b4651084090c8 
+https://www.python.org/ftp/python/2.7.8/python-2.7.8.msi
+https://pypi.python.org/packages/2.7/P/Pillow/Pillow-2.9.0.win32-py2.7.exe
 
 Python Pillow: Used for taking screenshots of the Windows desktop during the analysis. Can be seen when using the Cuckoo web interface.
+
+*NOTE: Python2.7 64-bit seems to cause some issues with the bahavioural analysis on Cuckoo.
+Switching to Python2.7 32-bit seems to fix this issue. Is likely due to the Cuckoo agent.py not working with 64-bit.
 
 Drag & Drop the two installer files from the Ubuntu VM to the Windows 7 VirtualBox VM
 
@@ -239,9 +247,14 @@ Create a snapshot of the Guest VM:
 
 
 
-PER-ANALYSIS NETWORK ROUTING (Simple Global Routing)
+SETUP iptables for "Simple Global Routing"
+(Sets up iptable rules for "Simple Global Routing", to allow VM access to both Cuckoo and the Internet)
+As iptables is not persistent, we are creating another bash script in "/opt/scripts/" to set the rules quickly
 
-sudo iptables -t nat -A POSTROUTING -o eth0 -s 192.168.56.0/24 -j MASQUERADE
+sudo gedit /opt/scripts/ip_forward.sh
+
+#!/bin/bash
+sudo iptables -t nat -A POSTROUTING -o ens33 -s 192.168.56.0/24 -j MASQUERADE (Note that the network interface specifed may differ from your setup)
 
 sudo iptables -P FORWARD DROP
 
@@ -253,10 +266,10 @@ sudo iptables -A FORWARD -s 192.168.56.0/24 -d 192.168.56.0/24 -j ACCEPT
 
 sudo iptables -A FORWARD -j LOG
 
-After these commands are executed, we have to enabled IP forwarding in the kernel
-
-echo 1 | sudo tee -a /proc/sys/net/ipv4/ip_forward
+echo 1 | sudo tee -a /proc/sys/net/ipv4/ip_forward (We have to enable IP forwarding in the kernel for packet forwarding.)
 sudo sysctl -w net.ipv4.ip_forward=1
+
+Ctrl + S to save
 
 
 
@@ -264,40 +277,44 @@ CONFIGURING CUCKOO
 
 cd ~/.cuckoo/conf
 
-sudo nano cuckoo.conf => Cuckoo Configuration File
+sudo gedit cuckoo.conf => Cuckoo Configuration File
 machinery = virtualbox  => Set Cuckoo to use virtualbox as the virtualization software
-memory_dump = yes => Since the Volatility plugin has been installed, it can be used to perform memory dumps of the guest machine)
+memory_dump = yes => Enables creation of memory dump of the analysis machine
 ip = 192.168.56.1 => Set the IP addresses of the guest machine for Cuckoo to communicate with.
-then Ctrl + X to exit , Y to save
+Ctrl + S  to save
 
-sudo nano auxiliary.conf
-sniffer enabled = yes
-then Ctrl + X to exit , Y to save 
+sudo gedit auxiliary.conf
+sniffer enabled = yes => Enables the external use of the tcpdump sniffer 
+Ctrl + S to save 
 
-sudo nano virtualbox.conf
-virtualbox mode = gui
-machines = cuckoo1
-optional = label = cuckoo1 and platform = windows
-ip = 192.168.56.101
-snapshot = Snapshot1
-Then Ctrl + X to exit , Y to save
+sudo gedit virtualbox.conf
+virtualbox mode = gui => Specify VirtualBox to run in GUI mode (A window displaying the VM)
+machines = cuckoo1 => Specifies the Virtual Machine to use as the target Guest VM
+label = cuckoo1
+platform = windows 
+ip = 192.168.56.101 => Specify IP address of the VM for the Cuckoo Host to reach
+snapshot = Cuckoo_Sandbox_Completed => Specify the snapshot name of a clean VM state. Used to revert changes after the analysis
+Ctrl + S to save
 
-sudo nano processing.conf
-memory enabled = yes then Ctrl + X to exit , Y to save
+sudo gedit processing.conf
+[memory] 
+enabled = yes =>  Another method of creating memory dump of the VM. Also enables Volatility to perform memory analysis, which will be shown in the report.
+Ctrl + S to save
 
-sudo nano memory.conf
-basic guest_profile = Win7SP1x64 
-then Ctrl + X to exit , Y to save 
+sudo gedit memory.conf => Volatility Configurations
+basic guest_profile = Win7SP1x64 => Sets VM guest profile to avoid time wasted identifying it.
+Ctrl + S to save 
 
 If you are unsure of the Oerating system profile to use, you can get a full list of the supported profiles by running:
 
 vol.py --info |grep Profiles -A48
 
 
-sudo nano reporting.conf
+sudo gedit reporting.conf
+[singlefile]
 enabled = yes
-Report.html enabled = yes 
-mongodb enabled = yes 
+html = yes 
+mongodb enabled = yes => Enables the mongoDB database for the collection and storage of analysis.
 then Ctrl + X to exit , Y to save
 
 
@@ -311,19 +328,14 @@ Cuckoo Community, run the command:
 
 cuckoo community 
 
-
-
-
-Launch two terminals 
-The first terminal will be used to run and start Cuckoo
+Launch two terminals, the first terminal will be used to run and start Cuckoo:
 
 cuckoo
 
-In the second terminal type the following to start the web server for the Cuckoo web interface
-
+In the second terminal, type the following to start the web server for the Cuckoo web interface
 
 cuckoo web runserver 0.0.0.0:8080 
 OR
 cuckoo web --host 127.0.0.1 --port 8080
 
-visit the Cuckoo Web Server via 127.0.0.1:8000 
+visit the Cuckoo Web Server via 127.0.0.1:8080 
