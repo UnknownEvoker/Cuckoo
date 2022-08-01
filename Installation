@@ -127,7 +127,7 @@ a simple bash script can be created for us to execute rather than typing the com
 
 sudo mkdir /opt/scripts/ (Create a directory called "scripts" in the /opt path)
 
-sudo nano /opt/scripts/vboxhostonly_enable.sh
+sudo gedit /opt/scripts/vboxhostonly_enable.sh
 
 #!/bin/bash
 vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1 
